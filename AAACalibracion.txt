@@ -1,0 +1,63 @@
+// Calibración para la película radiocrómica
+// A. Pérez Rozos - Enero 2009
+// H. Virgen de la Victoria
+// -------------------------------------------------------
+ macro "Calibracion" {
+
+
+// Coeficientes antiguos
+a0=-188.6163029
+a1=6884174.634
+a2=105403927400
+
+// aplica curva del calibracion del tipo D=a0+a1/V+a2/V^2
+
+//
+// ahora leemos la cuerva de calibración
+//
+
+pathfile=File.openDialog("Escoja el archivo de calibración (coeficientes del ajuste de calibracion):");
+filestring=File.openAsString(pathfile);
+rows=split(filestring, "\n");
+x=newArray(rows.length);
+// y=newArray(rows.length);
+
+for(i=0; i<rows.length; i++){
+columns=split(rows[i],"\t");
+x[i]=parseFloat(columns[0]);
+
+// y[i]=parseInt(columns[1]);
+}
+
+a0=x[1];
+a1=x[2];
+a2=x[3];
+
+
+
+w1 = getWidth(); h1 = getHeight();
+for (i=0; i<w1; i++) {
+	for (j=0;j<h1; j++) {
+		vpixel=getPixel(i,j);
+		if (vpixel<1) vpixel=1;
+		cpixel=a0+a1/vpixel+a2/(vpixel*vpixel);
+// Ponemos un control por si salen valores negativos
+		if (cpixel<0) cpixel=0;
+		setPixel(i,j,cpixel);			
+	
+	};
+showProgress((i/w1));
+};
+print("------------------------------------------------------");
+print("------------------------------------------------------");
+print("Aplicada curva de calibración:");
+print("------------------------------------------------------");
+print(pathfile);
+print("D=a0+a1/V+a2/V^2");
+print("D- Dosis, V- Valor de píxel");
+print("a0=",a0);
+print("a1=",a1);
+print("a2=",a2);
+print("------------------------------------------------------");
+print("------------------------------------------------------");
+};

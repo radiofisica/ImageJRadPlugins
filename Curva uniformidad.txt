@@ -1,0 +1,13 @@
+Archivo de coeficientes antiguos
+0.975000	a0
+0.000194	a1
+-0.000000457	a2
+0.000000000254	a3
+
+
+
+ajuste: pvCorr=a0+a1*pv+a2*pv^2+a3*pv^3
+
+El formato del archivo debe contener una línea de cabecera arbitraria,
+los coeficientes de corrección, seoparado por una tabulación se puede poner
+el contenido que se desee, y en las lineas siguientes lo mismo.

@@ -1,0 +1,128 @@
+// Corrección de la rotación de la película utilizando marcas fiduciarias del colimador
+// A. Pérez, M. Lobato - Enero 2009
+// H. Virgen de la Victoria
+// -------------------------------------------------------
+// 
+// Necesita de una segmented line de un minimo de 4 puntos que siga
+// las marcas de la cruceta del campo.
+//
+//
+// (1) Leemos las coordenadas de los puntos fiduciales
+// (2) Calculamos las coordenadas del isocentro
+// (3) Trasladamos el isocentro al centro de la imagen
+// (4) Calculamos la rotación de la imagen
+// (5) Corregimos la rotación de la imagen
+//
+// (0) Creamos una línea segentada estándar para empezar con el proceso
+// Los puntos están situados a 20 píxeles de los márgenes
+macro "Corr_RotacionYAlineacion" {
+
+makeLine(20,getHeight()/2,getWidth()/2,20,getWidth()-20,getHeight()/2,getWidth()/2,getHeight()-20);
+
+// Ahora dejamos al usuario que ajuste los puntos (requiere versión más moderna)
+ waitForUser("Esperando...", "Por favor, ajusta los puntos estándar para que coincidan con las marcas fuduciales, \n si se borra la línea cree una segmented line en el sentido de las agujas del reloj, empezando por la marca lateral izquierda");
+
+
+// (1) Leemos las coordenadas de los puntos fiduciales
+getSelectionCoordinates(x, y);
+      if (x.length<3)
+           exit("Necesario como mínimo una selección de línea segmentada de 4 puntos");
+
+print("Tomando coordenadas de marcas fiduciales:");
+print("       X        Y");
+print("p1="+x[0]+" ; " + y[0]);
+print("p2="+x[1]+" ; " + y[1]);
+print("p3="+x[2]+" ; " + y[2]);
+print("p4="+x[3]+" ; " + y[3]);
+
+// (2) Calculamos las coordenadas del isocentro
+
+//	Recta p1-p3
+  
+ 	     
+	b1 = (x[2]*y[0]-x[0]*y[2])/(x[2]-x[0]);
+	m1 = (y[2]-y[0])/(x[2]-x[0]);
+
+
+//	Recta p2-p4
+
+	
+	if (x[3]==x[1]) {
+  	    
+	xi = x[3];
+	yi = m1*x[3] + b1;
+
+  	 } else {
+
+	b2 = (x[3]*y[1]-x[1]*y[3])/(x[3]-x[1]);
+	m2 = (y[3]-y[1])/(x[3]-x[1]);
+	xi = (b2-b1)/(m1-m2);
+	yi = (b2*m1-b1*m2)/(m1-m2);
+	print("b2="+b2+" ; "+"m2="+m2);
+	
+	}
+
+print("b1="+b1+" ; "+"m1="+m1);
+
+
+// Coordenadas del isocentro.
+
+	//(xi, yi)
+
+
+print("xi="+xi+" ; "+"yi="+yi);
+
+// (3) Trasladamos el isocentro al centro de la imagen
+
+
+run("Select All");
+      run("Cut");
+      makeRectangle(getWidth()/2-xi, getHeight()/2-yi, getWidth(), getHeight());
+      run("Paste");
+      run("Select None");
+
+
+// (4) Calculamos la rotación de la imagen
+
+	if (m1>0) {
+  	    
+		alf1 = (180.0/PI)*atan(m1);
+
+  	 } else {
+
+		alf1 = (180.0/PI)*atan(-m1);
+
+	}
+
+	if (x[3]==x[1]) {
+  	    
+		alf2 = 0;
+
+  	 } else {
+
+		if (m2>0) {
+  	    
+			alf2 = (180.0/PI)*(PI/2-atan(m2));
+
+  		 } else {
+
+			alf2 = (180.0/PI)*(PI/2+atan(m2));
+
+		}
+
+  if (m1>0) {
+  	    
+			angle = -(alf1+alf2)/2;
+			
+			} else {
+			
+			angle = (alf1+alf2)/2;
+    }
+	print("angle="+angle+"  alf1="+alf1+"  alf2="+alf2);
+
+// (5) Corregimos la rotación de la imagen
+
+	
+	run("Arbitrarily...", "angle="+angle+" interpolate");
+
+};

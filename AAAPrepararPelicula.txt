@@ -1,0 +1,44 @@
+// Separa los tres canales de la imagen, aplica uniformidad y calibra en dosis
+// Este plugin se aplica a la película radiocrómica medida
+// A.Perez Rozos - Enero 2009
+// ------------------------------------------------------------
+// (A) Separa los tres canales y cierra el Azul y el verde
+// (B) Renombra el canal rojo a MedRed
+// (C) La convierte a 32 bits
+// (D) Aplica la correccion por uniformidad
+// (D2) Corrige la rotación de la imagen
+// (E) Calibra la imagen en dosis
+// (F) Pasa un filtro de mediana de 2 pixels de radio
+// ------------------------------------------------------------
+
+
+showStatus("Preparando imagen...");
+
+// (A) 
+run("Convert Stack to Images");
+selectImage("Green");
+close();
+selectImage("Blue");
+close();
+
+// (B) 
+selectImage("Red");
+rename("MedRed");
+// (C)
+
+run("32-bit");
+
+
+// (F)
+run("Median...", "radius=2");
+print("Pasado filtro de mediana de radio 2");
+// (D)
+run("Run...", "run=[AAACorreccionUniformidad.txt]");
+run("Run...", "run=[AAACorregirRotacion.txt]");
+// (E)
+run("Run...", "run=[AAACalibracion.txt]");
+
+// Ajusta el Window level desde 0 cGy a 400 cGy
+
+setMinAndMax(0, 400);
+showProgress(1);

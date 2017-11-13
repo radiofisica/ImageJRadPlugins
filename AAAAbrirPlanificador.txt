@@ -1,0 +1,21 @@
+// Abre la imagen del planificador en formato binario y aplica las correcciones necesarias
+// Imagen planar Pinnacle3 64x80 píxeles
+// A. Pérez Rozos - Enero 2009
+//
+//
+  macro "Abrir Planar Dose del Planificador" {
+  path = File.openDialog("Select a File");
+  
+  dir = File.getParent(path);
+  name = File.getName(path);
+  print("---- Abriendo imagen del planificador ----");
+  print("Imagen del planificador abierta: " +path);
+
+  abrir = "open=[" + path + "] image=[32-bit Real] width=256 height=320 offset=0 number=1 gap=0 little-endian";
+
+  run("Raw...", abrir);
+  run("Run...", "run=[AAADividirPlanificador.txt]");
+ 
+  print("---- imagen del planificador lista para su uso ----)";
+
+}

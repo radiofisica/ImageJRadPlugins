@@ -1,0 +1,21 @@
+// Abre la imagen de la película radiocrómica en formato TIFF
+// A. Pérez Rozos - Enero 2009
+//
+//
+  
+  path = File.openDialog("Select a File");
+  
+  dir = File.getParent(path);
+  name = File.getName(path);
+  print("---- Abriendo imagen de la película radiocrómica ----");
+  print("Imagen de la película abierta: " +path);
+
+//  abrir = "open=[" + path + "]";
+open(path);
+
+
+//  run("Raw...", abrir);
+run("Run...", "run=[AAAPrepararPelicula.txt]");
+ 
+  print("---- imagen de la película lista para su uso ----");
+

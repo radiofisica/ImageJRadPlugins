@@ -1,0 +1,12 @@
+Archivo de calibracion enero 2010
+-188.6163029	a0
+6884174.634	a1
+105403927400	a2
+
+
+
+ajuste: Da0+a1/pv+a2/pv^2
+
+El formato del archivo debe contener una línea de cabecera arbitraria,
+los coeficientes de claibración, seoparado por una tabulación se puede poner
+el contenido que se desee, y en las lineas siguientes lo mismo.

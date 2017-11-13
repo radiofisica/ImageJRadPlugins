@@ -1,0 +1,22 @@
+// Calibración para la película radiocrómica
+// A. Pérez Rozos - Enero 2009
+// H. Virgen de la Victoria
+// -------------------------------------------------------
+// Prepara la imagen del planificador para ser interpretado por los scripts
+
+
+macro "Planificador" {
+run("Size...", "width=576 height=720 constrain interpolate");
+
+Dialog.create("Normalización de la dosis");
+Dialog.addMessage("Introduzca el número de sesiones que corresponden con el plano de dosis a evaluar,\n para determinar la dosis por sesión");
+Dialog.addNumber("Número de sesiones correspondientes a la fase:",1);
+Dialog.show
+
+nsesiones=Dialog.getNumber();
+print("Imagen del planificador divida entre " +nsesiones+" sesiones.");
+run("Divide...", "value="+nsesiones);
+
+setMinAndMax(0.000000000, 400.000000000);
+
+};
